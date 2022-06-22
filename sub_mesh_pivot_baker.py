@@ -46,7 +46,7 @@ class PivotBaker(bpy.types.Operator):
         active = context.active_object #compund mesh
 
         if NORMALIZE_POSITIONS:
-            if active_object.dimensions[0] <= 0 or active_object.dimensions[1] <= 0 or active_object.dimensions[2] <= 0:
+            if active.dimensions[0] <= 0 or active.dimensions[1] <= 0 or active.dimensions[2] <= 0:
                 print('active object\'s bounding box is not correctly setup. Aborting')
                 return {'FINISHED'}
 
