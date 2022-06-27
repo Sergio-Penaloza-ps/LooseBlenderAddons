@@ -1,6 +1,7 @@
 import bpy
 import bmesh
 import random
+import perlin
 
 
 #Caches pivot information for sub-meshes (selected), based on a premade compund mesh's bounding box (active)
@@ -38,6 +39,7 @@ class PivotBaker(bpy.types.Operator):
         return (x,y,z)
 
     def execute(self, context):
+        perlin_noise = perlin.perlin(size=2048,density=100,seed=perlin.random_seed())
         scene = context.scene
         
         CACHE_LAYER = "PIVOT_CACHE"
@@ -46,7 +48,7 @@ class PivotBaker(bpy.types.Operator):
         active = context.active_object #compund mesh
 
         if NORMALIZE_POSITIONS:
-            if active_object.dimensions[0] <= 0 or active_object.dimensions[1] <= 0 or active_object.dimensions[2] <= 0:
+            if active.dimensions[0] <= 0 or active.dimensions[1] <= 0 or active.dimensions[2] <= 0:
                 print('active object\'s bounding box is not correctly setup. Aborting')
                 return {'FINISHED'}
 
@@ -66,7 +68,7 @@ class PivotBaker(bpy.types.Operator):
             
             for face in bm.faces:
                 for loop in face.loops:
-                    loop[color_layer] = (color[0], color[1], color[2], random.uniform(0.0,1.0))
+                    loop[color_layer] = (color[0], color[1], color[2], perlin_noise[int(obj.location.x), int(obj.location.y)])
                     if DEBUG:
                         print(loop[color_layer])
 
